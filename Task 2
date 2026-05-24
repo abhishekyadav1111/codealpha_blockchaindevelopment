@@ -1,0 +1,65 @@
+Here’s a straightforward Solidity contract that accepts an array of Ethereum addresses, receives Ether, and distributes it equally among them:
+
+---
+
+### 💻 Solidity Code Example
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract EtherSplitter {
+    address[] public recipients;
+
+    // Constructor: initialize with an array of addresses
+    constructor(address[] memory _recipients) {
+        require(_recipients.length > 0, "Recipients required");
+        recipients = _recipients;
+    }
+
+    // Payable function to receive Ether and distribute equally
+    function distribute() public payable {
+        require(msg.value > 0, "No Ether sent");
+        uint share = msg.value / recipients.length;
+
+        for (uint i = 0; i < recipients.length; i++) {
+            (bool success, ) = payable(recipients[i]).call{value: share}("");
+            require(success, "Transfer failed");
+        }
+
+        // If there's any remainder due to division, it stays in the contract
+    }
+
+    // View function to check contract balance
+    function getBalance() public view returns (uint) {
+        return address(this).balance;
+    }
+
+    // Allow owner to withdraw leftover Ether (optional)
+    function withdrawRemainder(address payable _to) public {
+        require(address(this).balance > 0, "No remainder");
+        (bool success, ) = _to.call{value: address(this).balance}("");
+        require(success, "Withdraw failed");
+    }
+}
+```
+
+---
+
+### ⚙️ How It Work
+- **Constructor**: Takes an array of addresses when deploying.  
+- **distribute()**: Payable function — send Ether with the transaction. It divides the amount equally among all recipients and transfers.  
+- **require(success)** ensures each transfer succeeds.  
+- **getBalance()**: Lets you check if any leftover Ether remains in the contract (due to division remainders).  
+- **withdrawRemainder()**: Optional function to withdraw leftover Ether.  
+
+---
+
+### 🚀 Testing in Remix IDE
+1. Open [Remix IDE](https://remix.ethereum.org).  
+2. Paste the contract code into a new file (e.g., `EtherSplitter.sol`).  
+3. Compile with Solidity ^0.8.0.  
+4. Deploy the contract — provide an array of addresses in the constructor (e.g., `[0x123..., 0x456...]`).  
+5. Call `distribute()` and send Ether with the transaction.  
+6. Check balances of recipient accounts — each should receive an equal share.  
+7. Use `getBalance()` to confirm if any remainder is left in the contract.  
