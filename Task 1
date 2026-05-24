@@ -1,0 +1,57 @@
+Here’s a simple Solidity contract that does exactly what you described — stores an integer, lets you increment/decrement it, and makes the value readable from outside:
+
+---
+
+### 💻 Solidity Code Example
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Counter {
+    // Declare an integer variable to store the value
+    uint public value;
+
+    // Constructor to initialize the value (optional)
+    constructor(uint initialValue) {
+        value = initialValue;
+    }
+
+    // Function to increment the value by 1
+    function increment() public {
+        value += 1;
+    }
+
+    // Function to decrement the value by 1
+    function decrement() public {
+        require(value > 0, "Value cannot go below zero");
+        value -= 1;
+    }
+
+    // The 'public' keyword on 'value' automatically creates a getter,
+    // so you can read it from outside the contract.
+    // Alternatively, you could write:
+    // function getValue() public view returns (uint) {
+    //     return value;
+    // }
+}
+```
+
+---
+
+### ⚙️ How It Works
+- `uint public value;` → declares the integer and makes it readable externally.  
+- `increment()` → increases the value by 1.  
+- `decrement()` → decreases the value by 1, with a safeguard to prevent negative values.  
+- `constructor(uint initialValue)` → optional, lets you set a starting value when deploying.  
+
+---
+
+### 🚀 Compile, Deploy, Test
+1. **Compile**  
+2. **Deploy** the contract (set an initial value if desired).  
+3. **Test**:
+   - Call `value()` → see the current number.  
+   - Call `increment()` → number increases by 1.  
+   - Call `decrement()` → number decreases by 1.  
+   - Call `value()` again → confirm changes.  
